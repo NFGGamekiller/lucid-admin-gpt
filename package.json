@@ -1,0 +1,22 @@
+{
+  "name": "lucid-city-rp-assistant",
+  "version": "2.0.0",
+  "description": "Conversational AI assistant for the Lucid City RP community",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": ["discord", "bot", "roleplay", "community", "assistant", "ai"],
+  "author": "Sergeant Brandon Lucas",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.2.1",
+    "openai": "^5.11.0"
+  }
+}
