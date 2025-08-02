@@ -52,21 +52,27 @@ class ConversationSession {
   resetTimeout() {
     if (this.timeout) {
       clearTimeout(this.timeout);
+      this.timeout = null;
     }
     
     this.timeout = setTimeout(() => {
-      this.end('timeout');
+      // Check if conversation still exists before ending
+      if (activeConversations.has(this.userId)) {
+        this.end('timeout');
+      }
     }, CONVERSATION_TIMEOUT);
   }
 
   end(reason = 'manual') {
     if (this.timeout) {
       clearTimeout(this.timeout);
+      this.timeout = null;
     }
     
     const duration = Math.round((Date.now() - this.startTime) / 1000);
     console.log(`📝 Conversation ended (${reason}) - User: ${this.userId}, Duration: ${duration}s, Messages: ${this.messageHistory.length}`);
     
+    // Remove from active conversations first to prevent duplicate timeouts
     activeConversations.delete(this.userId);
     
     // Send timeout message if needed
@@ -132,7 +138,8 @@ client.on('messageCreate', async message => {
       const response = await gptHandler.handleConversation(userMessage, session.getHistory(), {
         isNewConversation: true,
         userName: message.author.displayName || message.author.username,
-        guildName: message.guild?.name || 'Direct Message'
+        guildName: message.guild?.name || 'Direct Message',
+        guildId: message.guild?.id || null
       });
       
       session.addMessage('assistant', response);
@@ -160,7 +167,8 @@ client.on('messageCreate', async message => {
       const response = await gptHandler.handleConversation(message.content, session.getHistory(), {
         isNewConversation: false,
         userName: message.author.displayName || message.author.username,
-        guildName: message.guild?.name || 'Direct Message'
+        guildName: message.guild?.name || 'Direct Message',
+        guildId: message.guild?.id || null
       });
       
       session.addMessage('assistant', response);

@@ -9,9 +9,9 @@ class ConversationalGPTHandler {
 
   async handleConversation(userMessage, conversationHistory, context = {}) {
     try {
-      const { isNewConversation, userName, guildName } = context;
+      const { isNewConversation, userName, guildName, guildId } = context;
 
-      const systemPrompt = this.buildSystemPrompt(userName, guildName, isNewConversation);
+      const systemPrompt = this.buildSystemPrompt(userName, guildName, isNewConversation, guildId);
       const messages = this.buildMessageHistory(conversationHistory, systemPrompt);
 
       const completion = await this.openai.chat.completions.create({
@@ -31,8 +31,15 @@ class ConversationalGPTHandler {
     }
   }
 
-  buildSystemPrompt(userName, guildName, isNewConversation) {
+  buildSystemPrompt(userName, guildName, isNewConversation, guildId) {
+    const isMainServer = guildId === '776724970579165186';
+    const serverContext = isMainServer ? 
+      'You are in the main Lucid City server where all support is handled.' : 
+      'You are in a Lucid City affiliated server. All official support must go through the main Lucid City server.';
+
     return `You are the Lucid City RP Community Assistant, a knowledgeable AI helper for the Lucid City roleplay server community. You're currently having a conversation with ${userName} in ${guildName}.
+
+${serverContext}
 
 PERSONALITY & TONE:
 - Be professional, direct, and factual
@@ -62,6 +69,36 @@ You have access to comprehensive knowledge about:
 - Support channels and how to get help
 - Appeal processes and reporting procedures
 - Roleplay best practices and server culture
+
+SUPPORT PROCEDURES (All support goes to main Lucid City server):
+Player Reports:
+- Join "Waiting Room" voice channel in main server OR request ticket in community-support channel
+- Ticket sent to DMs with prompts for required information
+- Requires video clip minimum 1 minute (recommended 2 minutes) with full context
+- Must include player's UID (number over head when pressing J in-game)
+- Must include ALL audio from ALL players involved (no voices omitted)
+- Report as soon as scene concludes (exceptions for real-life emergencies)
+- Clips without these elements are considered invalid
+
+Staff Reports:
+- Same process as player reports but with escalation hierarchy:
+- Moderation team reports → handled by Lead Moderator or higher
+- Lead Moderator reports → handled by Administrator
+- Administrator reports → handled by Head Administrator  
+- Head Administrator reports → handled by Management
+- Management reports → handled by TJ Miller (Co-Director)
+
+Ban Appeals:
+- ONLY through https://forums.lucidcityrp.com/forms/29-20-ban-appeal/
+- Takes 2-10 days depending on Infraction Review Team workload
+- Infraction Review Team ONLY handles appeals through that link
+- NO appeals via ticket or waiting room
+- Cannot appeal on behalf of others
+
+SERVER INFORMATION:
+- Main Lucid City server ID: 776724970579165186
+- All support and appeals must go through the main server
+- If user is not in main server, direct them there for official support
 
 IMPORTANT GUIDELINES:
 - Always clarify that you're an AI assistant, not official staff
