@@ -73,13 +73,7 @@ class ConversationSession {
     if (reason === 'timeout') {
       const channel = client.channels.cache.get(this.channelId);
       if (channel) {
-        const embed = new EmbedBuilder()
-          .setColor(0xffa500)
-          .setTitle('⏰ Conversation Timed Out')
-          .setDescription('Our conversation has ended due to inactivity. Feel free to ping me again if you need more help!')
-          .setFooter({ text: 'Tip: Type "End" to manually end our conversation anytime' });
-        
-        channel.send({ embeds: [embed] }).catch(console.error);
+        channel.send('Our conversation has ended due to inactivity. Ping me again if you need more help.').catch(console.error);
       }
     }
   }
@@ -117,13 +111,7 @@ client.on('messageCreate', async message => {
       const session = activeConversations.get(userId);
       session.end('manual');
       
-      const embed = new EmbedBuilder()
-        .setColor(0x00ff00)
-        .setTitle('✅ Conversation Ended')
-        .setDescription('Thanks for chatting! I\'m here whenever you need help with Lucid City RP.')
-        .setFooter({ text: 'Ping me anytime to start a new conversation!' });
-      
-      return await message.reply({ embeds: [embed] });
+      return await message.reply('Conversation ended. Ping me anytime if you need help with Lucid City RP.');
     }
 
     // Start new conversation if bot is mentioned
@@ -149,14 +137,8 @@ client.on('messageCreate', async message => {
       
       session.addMessage('assistant', response);
       
-      // Send response with conversation info
-      const embed = new EmbedBuilder()
-        .setColor(0x00ff88)
-        .setTitle('🤖 Lucid City RP Assistant')
-        .setDescription(response)
-        .setFooter({ text: 'I\'m listening to your messages now! Type "End" to finish our conversation.' });
-      
-      await message.reply({ embeds: [embed] });
+      // Send response - plain text for natural conversation
+      await message.reply(`${response}\n\n*I'm listening to your messages now. Type "End" to finish our conversation.*`);
       return;
     }
 
@@ -192,13 +174,7 @@ client.on('messageCreate', async message => {
     if (isBotMentioned && hasActiveConversation) {
       const session = activeConversations.get(userId);
       if (session.channelId !== channelId) {
-        const embed = new EmbedBuilder()
-          .setColor(0xffa500)
-          .setTitle('⚠️ Active Conversation')
-          .setDescription(`I'm already chatting with you in <#${session.channelId}>! Please continue our conversation there, or type "End" there to start a new one here.`)
-          .setFooter({ text: 'I can only have one conversation per user at a time' });
-        
-        await message.reply({ embeds: [embed] });
+        await message.reply(`I am already chatting with you in <#${session.channelId}>. Continue our conversation there, or type "End" there to start a new one here.`);
       }
       return;
     }
@@ -206,14 +182,8 @@ client.on('messageCreate', async message => {
   } catch (error) {
     console.error('❌ Message handling error:', error);
     
-    const errorEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle('❌ Error')
-      .setDescription('I encountered an error while processing your message. Please try again or contact staff if the issue persists.')
-      .setTimestamp();
-
     try {
-      await message.reply({ embeds: [errorEmbed] });
+      await message.reply('I encountered an error while processing your message. Try again or contact staff if the issue persists.');
     } catch (replyError) {
       console.error('❌ Failed to send error message:', replyError);
     }
@@ -226,19 +196,28 @@ client.on('guildCreate', guild => {
   
   // Try to send a welcome message to the system channel
   if (guild.systemChannel) {
-    const welcomeEmbed = new EmbedBuilder()
-      .setColor(0x00ff88)
-      .setTitle('🤖 Lucid City RP Assistant Has Arrived!')
-      .setDescription('Thanks for adding me! I\'m here to help your community with Lucid City RP rules and support.')
-      .addFields(
-        { name: '💬 How to Use Me', value: '**Just ping me** (@Lucid City RP Assistant) and ask your question!\nI\'ll start a conversation with you and help with rules, procedures, and general questions.', inline: false },
-        { name: '🔄 Conversation Control', value: '• **To start:** Ping me with your question\n• **To end:** Type "End" in a message\n• **Auto-timeout:** 60 seconds of inactivity', inline: false },
-        { name: '📋 What I Can Help With', value: '• Server rules and explanations\n• Finding the right support channels\n• Roleplay guidance and best practices\n• Appeals and reporting procedures\n• General community questions', inline: false }
-      )
-      .setTimestamp()
-      .setFooter({ text: 'Ping me to start chatting!' });
+    const welcomeMessage = `**Lucid City RP Assistant Has Arrived**
 
-    guild.systemChannel.send({ embeds: [welcomeEmbed] }).catch(() => {
+I am here to help your community with Lucid City RP rules and support.
+
+**How to Use Me:**
+Ping me (@${client.user.displayName}) and ask your question. I will start a conversation with you and help with rules, procedures, and general questions.
+
+**Conversation Control:**
+- To start: Ping me with your question
+- To end: Type "End" in a message  
+- Auto-timeout: 60 seconds of inactivity
+
+**What I Can Help With:**
+- Server rules and explanations
+- Finding the right support channels
+- Roleplay guidance and best practices
+- Appeals and reporting procedures
+- General community questions
+
+Ping me to start chatting.`;
+
+    guild.systemChannel.send(welcomeMessage).catch(() => {
       console.log(`Could not send welcome message to ${guild.name}`);
     });
   }
