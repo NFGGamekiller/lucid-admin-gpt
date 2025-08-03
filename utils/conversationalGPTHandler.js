@@ -63,6 +63,13 @@ class ConversationalGPTHandler {
         if (rulesLoader.getCompleteRulesContext) {
           context = rulesLoader.getCompleteRulesContext(keywords);
           console.log(`📋 Using complete rules context: ${context.length} characters`);
+          
+          // Check if rules failed to load
+          if (context.startsWith('ERROR:')) {
+            console.error('❌ Rules files not loaded properly');
+            return 'RULES_ERROR: Rule files not available. Cannot provide accurate rule information.';
+          }
+          
         } else if (rulesLoader.getRuleContext) {
           context = rulesLoader.getRuleContext(keywords);
           console.log(`📋 Using fallback rules context: ${context.length} characters`);
@@ -70,7 +77,7 @@ class ConversationalGPTHandler {
         return context;
       } catch (error) {
         console.error('❌ Error getting rules context:', error);
-        return '';
+        return 'RULES_ERROR: Unable to access rule information.';
       }
     }
     
@@ -143,6 +150,8 @@ CONVERSATION STYLE:
 - When rules are not clear, direct users to staff for clarification
 
 ${rulesContext ? `RELEVANT RULES CONTEXT:\n${rulesContext}\n\n` : ''}
+
+IMPORTANT: You MUST base all rule-related responses ONLY on the rules provided in the RELEVANT RULES CONTEXT above. If the context contains "RULES_ERROR" or "ERROR:", inform the user that rule information is unavailable and direct them to contact staff.
 
 TECHNICAL INFORMATION:
 - Lucid City RP is a FiveM roleplay server

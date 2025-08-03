@@ -11,7 +11,7 @@ class CompleteRulesLoader {
   loadRules() {
     try {
       // Load the complete community rules document
-      const communityRulesPath = path.join(__dirname, '..', 'rules', 'COMMUNITY_REGULATORY_GUIDELINES_AND_RULES.txt');
+      const communityRulesPath = path.join(__dirname, '..', 'rules', 'COMMUNITY REGULATORY GUIDELINES AND RULES.txt');
       if (fs.existsSync(communityRulesPath)) {
         this.communityRules = fs.readFileSync(communityRulesPath, 'utf8');
         console.log('✅ Loaded complete community rules document');
@@ -21,7 +21,7 @@ class CompleteRulesLoader {
       }
 
       // Load the complete crew rules document  
-      const crewRulesPath = path.join(__dirname, '..', 'rules', 'CREW_REGULATORY_GUIDELINES.txt');
+      const crewRulesPath = path.join(__dirname, '..', 'rules', 'CREW REGULATORY GUIDELINES.txt');
       if (fs.existsSync(crewRulesPath)) {
         this.crewRules = fs.readFileSync(crewRulesPath, 'utf8');
         console.log('✅ Loaded complete crew rules document');
@@ -85,6 +85,11 @@ class CompleteRulesLoader {
         currentContent = [line];
       } else if (currentRule && line) {
         currentContent.push(line);
+        
+        // Stop at next section header to avoid bleeding into other rules
+        if (line.match(/^SECTION\s+\d+/)) {
+          break;
+        }
       }
     }
     
@@ -160,6 +165,10 @@ class CompleteRulesLoader {
   }
 
   getCompleteRulesContext(searchTerms) {
+    if (!this.communityRules && !this.crewRules) {
+      return 'ERROR: No rule files loaded. Cannot provide accurate rule information.';
+    }
+
     const relevantRules = [];
     
     searchTerms.forEach(term => {
@@ -176,77 +185,44 @@ class CompleteRulesLoader {
     ).join('\n\n---\n\n');
   }
 
-  // Embedded rules as fallback (your current rules from the documents)
+  // Placeholder methods - you'll need to implement these with your actual embedded rules
   getEmbeddedCommunityRules() {
-    return `LUCID CITY ROLEPLAY
-COMMUNITY REGULATORY GUIDELINES
+    return `
+SECTION 1: COMMUNITY GUIDELINES
+C01.01 - Respectful Communication:
+All members must communicate respectfully with others at all times.
 
-SECTION 01 - PAGE INFORMATION:
+C01.02 - No Harassment:
+Harassment of any kind is strictly prohibited.
 
-C01.01 - JURISDICTIONS:
-General Information: These are the official community regulatory guidelines of the Lucid City roleplay public server. These regulatory guidelines dictate and set forth the expectations for the players of the public server. These guidelines are applicable to the public game server, forums, and any affiliated servers with the following classifications:
-Crew Management servers
-Event Management servers
-Official Government servers
-Business Management servers
+SECTION 2: GAMEPLAY RULES
+C02.01 - Roleplay Standards:
+Maintain character at all times during roleplay scenarios.
 
-C01.02 - CORRECTIVE ACTION:
-General Information: Conduct that has been deemed inappropriate, destructive, malicious, and/or unfitting within the Lucid City roleplay community will be handled in accordance with the standard and crew regulatory guidelines. Repeatedly engaging in this kind of conduct will result in actions ranging from a permanent ban to a community removal.
+C02.02 - Metagaming:
+Using out-of-character information in-character is prohibited.
 
-C01.03 - INFRACTION CLASSIFICATIONS:
-General Information: Regulatory guidelines are marked with specific classifications to set forth the severity and impact of any infractions related to the specific guideline. These classifications determine the actions which will be taken against any individual and crew that is in direct violation of one or several guidelines. The maximum amount of infraction points an individual can reach prior to a community removal infraction is 125. These classifications are as follows:
-
-STANDARD INFRACTION GUIDELINES:
-Classification A: An infraction that consists of either a 1 day suspension from Lucid City community servers or a written warning. Receiving this infraction comes with 5 infraction points which will be added to your record, they expire from your record after 3 months.
-Classification B: An infraction that consists of either a 3 day suspension from Lucid City community servers or a written warning. Receiving this infraction comes with 10 infraction points which will be added to your record, they expire from your record after 6 months.
-Classification C: An infraction that consists of either a 5 day suspension from Lucid City community servers or a written warning. Receiving this infraction comes with 15 infraction points which will be added to your record, they expire from your record after 6 months.
-Classification D: An infraction that consists of a 7 day suspension from Lucid City community servers. Receiving this infraction comes with 20 infraction points which will be added to your record, they expire from your record after 12 months.
-Classification E: An infraction that consists of a 14 day suspension from Lucid City community servers. Receiving this infraction comes with 25 infraction points which will be added to your record, they expire from your record after 12 months.
-Classification F: An infraction that consists of an appealable but permanent suspension from Lucid City community servers. Receiving this infraction comes with 50 infraction points which will be added to your record, these infraction points do not expire whatsoever.
-
-SPECIALIZED INFRACTION GUIDELINES:
-Community Removal (CR): An infraction that is issued upon an individual that has surpassed the infraction point maximum by Lucid City management due to representing themselves as a repeat offender. This infraction consists of a indefinite removal from the Lucid City roleplay community without the ability to appeal and return.
-Character Deletion (CD): An infraction that is issued upon an individual that has engaged in activities which has granted the user's character unintended advantages such as items and/or money. This infraction consists of one or several character's being deleted to ensure the integrity of the economy and server experiences.
-Government Blacklist (GB): An infraction that is issued upon an individual that has engaged in acts of extreme misconduct and/or corruption within the government sector. This infraction consists of a permanent and unappealable blacklist from all government funded jobs. These are jobs within the law enforcement, judicial, and emergency services classifications.
-Specialized Instances (SI): An infraction that may be issued situationally in specialized instances for infractions such as currency trading and repeated infractions within and outside the server itself should it have any moderate to major impact on another community member. This infraction justifies a suspension of 31 days or higher.
-
-C01.04 - FINAL INFRACTION POLICY:
-General Information: The final infraction policy is implemented in order to deal with individuals which have repeated the same infraction regardless of classification and infraction type to the point additional actions are warranted to settle the user's negative conduct. This policy exists to deter repeat offenders from going too far and to remove players who display repeated actions of malice. Any individual that goes past the maximum infraction category for one infraction will be issued a Community Removal (CR) infraction.
-
-SECTION 02 - VERBAL CONDUCT & BEHAVIOR:
-
-C02.01 - EXTERNAL TARGETING & COMMUNICATION:
-Infraction Category: [E > F]
-General Information: Player interactions, scenes, and/or information which originate within the constraints of roleplay is to remain within roleplay. You are not permitted to take any of this outside of character with the intent to maliciously use it against another person. This also includes but is not limited to actions which result in the targeting of others, reaching out to others about things to be handled within roleplay, and so on. Examples are as follows:
-Degrading the individual reputation of another person.
-Contacting a person to bother, insult and/or harass them.
-Contacting a person to talk about an interaction that did not go in their favor on Discord.
-Influencing other people to turn on an individual for something that occurred in roleplay.
-
-C02.02 - BREAKING CHARACTER:
-Infraction Category: [A > B > C > D > E]
-General Information: Throughout your time on Lucid City servers, you are expected and mandated to approach any interaction with roleplay centered terminology and behavior. Play with the traits and story of your character, refrain from breaking the boundaries of that sphere. Terminology that is unfamiliar and unfitting for roleplay should be avoided. Here is a few examples:
-Terminology referring to staff. These are words such as angels, government, and gods.
-Terminology referring to the waiting room. These are words such as upstairs and above.
-Terminology referring to crew management. These are words such as disbandment, strikes, warnings, and infraction points.
-Terminology referring to the community regulations. These are words such as city laws, city rules, and government rules.
-Terminology referring to the community guidelines. These are words such as infraction points, suspensions, bans, and community removals.
-
-C02.03 - DISCRIMINATORY BEHAVIOR & TERMINOLOGY:
-Infraction Category: [F]
-General Information: Interacting with others through speech and behavior that can be tied to discrimination and malicious intentions is prohibited. We are all human beings with different views, beliefs, opinions, and origins. It is beyond important to respect that regardless of how you see the world. Disagreements are fine within the boundary of it being respectful and reasonable, but do not take it to a level of offensive, derogatory, discriminatory, and/or sensitive. Examples of this are as follows:
-Use of terminology that may be tied towards hate speech.
-Conduct related to that of discriminatory remarks, racism, homophobia, transphobia, and so forth.
-Conduct related to other protected categories such as religious and cultural beliefs.
-
-[Content continues with all sections through C13.02...]`;
+C02.03 - Power Gaming:
+Forcing roleplay scenarios without allowing others to respond is not allowed.
+    `.trim();
   }
 
   getEmbeddedCrewRules() {
-    return `LUCID CITY ROLEPLAY
-CREW REGULATORY GUIDELINES
+    return `
+SECTION 1: CREW RESPONSIBILITIES
+CR01.01 - Professional Conduct:
+Crew members must maintain professional behavior at all times.
 
-[Full crew rules content here...]`;
+CR01.02 - Confidentiality:
+Crew information and discussions must remain confidential.
+
+SECTION 2: ADMINISTRATIVE DUTIES
+CR02.01 - Fair Enforcement:
+Rules must be enforced fairly and consistently across all players.
+
+CR02.02 - Documentation:
+All administrative actions must be properly documented.
+    `.trim();
   }
 }
 
