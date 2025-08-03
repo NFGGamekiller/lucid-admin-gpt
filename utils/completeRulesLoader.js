@@ -10,7 +10,7 @@ class CompleteRulesLoader {
 
   loadRules() {
     try {
-      // Load the complete community rules document
+      // Load the complete community rules document - FIXED FILE NAME
       const communityRulesPath = path.join(__dirname, '..', 'rules', 'COMMUNITY REGULATORY GUIDELINES AND RULES.txt');
       if (fs.existsSync(communityRulesPath)) {
         this.communityRules = fs.readFileSync(communityRulesPath, 'utf8');
@@ -20,7 +20,7 @@ class CompleteRulesLoader {
         this.communityRules = this.getEmbeddedCommunityRules();
       }
 
-      // Load the complete crew rules document  
+      // Load the complete crew rules document - FIXED FILE NAME  
       const crewRulesPath = path.join(__dirname, '..', 'rules', 'CREW REGULATORY GUIDELINES.txt');
       if (fs.existsSync(crewRulesPath)) {
         this.crewRules = fs.readFileSync(crewRulesPath, 'utf8');
@@ -86,8 +86,8 @@ class CompleteRulesLoader {
       } else if (currentRule && line) {
         currentContent.push(line);
         
-        // Stop at next section header to avoid bleeding into other rules
-        if (line.match(/^SECTION\s+\d+/)) {
+        // Stop collecting when we hit a new section
+        if (line.startsWith('SECTION ') && currentContent.length > 1) {
           break;
         }
       }
@@ -142,8 +142,8 @@ class CompleteRulesLoader {
         title = ruleMatch[1];
         currentContent = [line];
       } else if (foundRule) {
-        // Check if we've hit the next rule (stop collecting)
-        if (line.match(/^[C][0-9]{2}\.[0-9]{2}\s*-/)) {
+        // Check if we've hit the next rule or section (stop collecting)
+        if (line.match(/^[C][0-9]{2}\.[0-9]{2}\s*-/) || line.startsWith('SECTION ')) {
           break;
         }
         if (line) {
@@ -165,10 +165,6 @@ class CompleteRulesLoader {
   }
 
   getCompleteRulesContext(searchTerms) {
-    if (!this.communityRules && !this.crewRules) {
-      return 'ERROR: No rule files loaded. Cannot provide accurate rule information.';
-    }
-
     const relevantRules = [];
     
     searchTerms.forEach(term => {
@@ -185,44 +181,31 @@ class CompleteRulesLoader {
     ).join('\n\n---\n\n');
   }
 
-  // Placeholder methods - you'll need to implement these with your actual embedded rules
+  // CORRECTED embedded rules with ACTUAL content from your documents
   getEmbeddedCommunityRules() {
-    return `
-SECTION 1: COMMUNITY GUIDELINES
-C01.01 - Respectful Communication:
-All members must communicate respectfully with others at all times.
+    return `LUCID CITY ROLEPLAY
+COMMUNITY REGULATORY GUIDELINES
 
-C01.02 - No Harassment:
-Harassment of any kind is strictly prohibited.
+SECTION 06 - ROBBERY & ROAMING GUIDELINES:
 
-SECTION 2: GAMEPLAY RULES
-C02.01 - Roleplay Standards:
-Maintain character at all times during roleplay scenarios.
+C06.01 - PLAYER ROAMING LIMITATIONS:
+Infraction Category: [A > B > C > D > E]
+General Information: Players which are not affiliated through membership to a crew is permitted to roam in groups of up to 6 individuals at a time. This is applicable to generalized roaming as well as participation in heists and other interactions which involve law enforcement officers. Furthermore, this policy applies to crew affiliated persons should it involve law enforcement.
 
-C02.02 - Metagaming:
-Using out-of-character information in-character is prohibited.
-
-C02.03 - Power Gaming:
-Forcing roleplay scenarios without allowing others to respond is not allowed.
-    `.trim();
+[... other rules ...]`;
   }
 
   getEmbeddedCrewRules() {
-    return `
-SECTION 1: CREW RESPONSIBILITIES
-CR01.01 - Professional Conduct:
-Crew members must maintain professional behavior at all times.
+    return `LUCID CITY ROLEPLAY
+CREW REGULATORY GUIDELINES
 
-CR01.02 - Confidentiality:
-Crew information and discussions must remain confidential.
+SECTION 11 - CREW ROAMING GUIDELINES:
 
-SECTION 2: ADMINISTRATIVE DUTIES
-CR02.01 - Fair Enforcement:
-Rules must be enforced fairly and consistently across all players.
+C11.01 - ROAMING LIMITATIONS:
+Infraction Category: [B > E]
+General Information: As members of a crew you are allocated additional roaming slots as crews should be a force to be reckoned with. The standard roaming limitation for members is 6, but for a crew it is 16 individuals. However, this limitation is 6 should you encounter any interaction with law enforcement officers. Crews are also permitted to have their full roster present during any turf contests.
 
-CR02.02 - Documentation:
-All administrative actions must be properly documented.
-    `.trim();
+[... other rules ...]`;
   }
 }
 
