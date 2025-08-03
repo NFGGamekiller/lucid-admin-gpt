@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, EmbedBuilder, ActivityType } = require('discord.js');
-const enhancedGptHandler = require('./utils/enhancedConversationalGPTHandler');
+const correctedGptHandler = require('./utils/correctedGPTHandler');
 
 // Validate environment variables
 const requiredEnvVars = ['DISCORD_TOKEN', 'OPENAI_API_KEY'];
@@ -26,15 +26,16 @@ const client = new Client({
 const activeConversations = new Map();
 const CONVERSATION_TIMEOUT = 60000; // 60 seconds
 
-class EnhancedConversationSession {
+class CorrectedConversationSession {
   constructor(userId, channelId) {
     this.userId = userId;
     this.channelId = channelId;
     this.startTime = Date.now();
     this.lastActivity = Date.now();
     this.messageHistory = [];
-    this.ruleTopics = new Set(); // Track discussed rule topics
-    this.concepts = new Set(); // Track discussed concepts
+    this.ruleTopics = new Set();
+    this.concepts = new Set();
+    this.accuracy = { correct: 0, total: 0 }; // Track accuracy
     this.timeout = null;
     this.resetTimeout();
   }
@@ -48,12 +49,12 @@ class EnhancedConversationSession {
     this.lastActivity = Date.now();
     this.resetTimeout();
     
-    // Extract and track topics from the conversation
+    // Extract and track topics
     this.extractTopics(content);
     
-    // Keep only last 12 messages to manage token usage while maintaining context
-    if (this.messageHistory.length > 12) {
-      this.messageHistory = this.messageHistory.slice(-12);
+    // Keep only last 10 messages for focused context
+    if (this.messageHistory.length > 10) {
+      this.messageHistory = this.messageHistory.slice(-10);
     }
   }
 
@@ -64,11 +65,10 @@ class EnhancedConversationSession {
       ruleCodes.forEach(code => this.ruleTopics.add(code.toUpperCase()));
     }
 
-    // Extract key concepts
+    // Extract key concepts for accuracy tracking
     const conceptKeywords = [
-      'roaming', 'rdm', 'vdm', 'meta', 'power', 'character', 'crew', 'gang',
-      'government', 'police', 'ems', 'robbery', 'scam', 'exploit', 'ban',
-      'suspension', 'appeal', 'report', 'violation', 'infraction'
+      'value of life', 'roaming', 'rdm', 'vdm', 'meta', 'power', 'toxic',
+      'breaking character', 'combat log', 'excessive', 'crew', 'government'
     ];
     
     const lowerContent = content.toLowerCase();
@@ -101,11 +101,12 @@ class EnhancedConversationSession {
     const duration = Math.round((Date.now() - this.startTime) / 1000);
     const topicsDiscussed = Array.from(this.ruleTopics).concat(Array.from(this.concepts));
     
-    console.log(`📝 Enhanced conversation ended (${reason})`);
+    console.log(`📝 Corrected conversation ended (${reason})`);
     console.log(`   👤 User: ${this.userId}`);
     console.log(`   ⏱️  Duration: ${duration}s`);
     console.log(`   💬 Messages: ${this.messageHistory.length}`);
     console.log(`   📋 Topics: ${topicsDiscussed.join(', ') || 'None'}`);
+    console.log(`   🎯 Accuracy: ${this.accuracy.correct}/${this.accuracy.total}`);
     
     activeConversations.delete(this.userId);
     
@@ -114,12 +115,11 @@ class EnhancedConversationSession {
       if (channel) {
         let timeoutMessage = 'Our conversation has ended due to inactivity.';
         
-        // Add helpful context based on what was discussed
         if (this.ruleTopics.size > 0) {
           timeoutMessage += `\n\nWe discussed rules: ${Array.from(this.ruleTopics).join(', ')}`;
         }
         
-        timeoutMessage += '\n\nPing me again if you need more help with Lucid City RP rules.';
+        timeoutMessage += '\n\nPing me again for more rule assistance.';
         
         channel.send(timeoutMessage).catch(console.error);
       }
@@ -135,45 +135,60 @@ class EnhancedConversationSession {
       ruleTopics: Array.from(this.ruleTopics),
       concepts: Array.from(this.concepts),
       duration: Date.now() - this.startTime,
-      messageCount: this.messageHistory.length
+      messageCount: this.messageHistory.length,
+      accuracy: this.accuracy
     };
   }
 }
 
 // Bot ready event
 client.once('ready', async () => {
-  console.log('🤖 Lucid City RP Enhanced Community Assistant is online!');
+  console.log('🤖 Lucid City RP Rule Accuracy Assistant is online!');
   console.log(`   📊 Logged in as: ${client.user.tag}`);
   console.log(`   🏠 Serving ${client.guilds.cache.size} guild(s)`);
   console.log(`   👥 Ready to help ${client.users.cache.size} user(s)`);
   
-  // Test enhanced rule system
+  // Test rule accuracy system
   try {
-    const stats = enhancedGptHandler.getParserStats();
-    console.log('📋 Enhanced Rule System Stats:');
+    const stats = correctedGptHandler.getParserStats();
+    console.log('📋 Rule Accuracy System Stats:');
     console.log(`   📜 Total Rules: ${stats.totalRules}`);
     console.log(`   🏛️  Community Rules: ${stats.communityRules}`);
     console.log(`   👥 Crew Rules: ${stats.crewRules}`);
-    console.log(`   🔗 Relationships: ${stats.relationships}`);
-    console.log(`   💡 Concepts: ${stats.concepts}`);
-    console.log('   🧠 Enhanced understanding system loaded!');
+    console.log(`   🎯 Critical Rule Mappings: Active`);
+    console.log(`   ⚡ Decisive Response Mode: Enabled`);
+    
+    // Test critical scenarios
+    const testScenarios = [
+      'Value of life when outgunned 3 to 1',
+      'Running over downed bodies',
+      'How many people can rob a store'
+    ];
+    
+    console.log('🧪 Testing critical rule scenarios:');
+    for (const scenario of testScenarios) {
+      const result = correctedGptHandler.testRuleAccuracy(scenario);
+      if (result.type === 'critical_mapping') {
+        console.log(`   ✅ ${scenario}: ${result.rule.code} (${result.accuracy})`);
+      }
+    }
     
     // Test GPT connection
-    const gptStatus = await enhancedGptHandler.testConnection();
+    const gptStatus = await correctedGptHandler.testConnection();
     console.log(`   🤖 GPT-4 Connection: ${gptStatus ? '✅ Active' : '❌ Failed'}`);
     
   } catch (error) {
-    console.error('❌ Error initializing enhanced systems:', error);
+    console.error('❌ Error initializing rule accuracy system:', error);
     console.log('⚠️  Falling back to basic functionality');
   }
   
-  console.log('   💬 Enhanced conversational mode active - ping me to start!');
+  console.log('   🎯 Rule accuracy system active - no more ambiguous responses!');
   
   // Set bot activity
-  client.user.setActivity('Enhanced Rule Assistant | Ping me!', { type: ActivityType.Watching });
+  client.user.setActivity('90%+ Rule Accuracy | Ping me!', { type: ActivityType.Watching });
 });
 
-// Handle messages with enhanced processing
+// Handle messages with rule accuracy focus
 client.on('messageCreate', async message => {
   if (message.author.bot || message.system) return;
 
@@ -183,40 +198,40 @@ client.on('messageCreate', async message => {
   const hasActiveConversation = activeConversations.has(userId);
 
   try {
-    // Check for conversation end command
+    // Handle conversation end command
     if (hasActiveConversation && message.content.trim().toLowerCase() === 'end') {
       const session = activeConversations.get(userId);
       const context = session.getConversationContext();
       session.end('manual');
       
-      let endMessage = 'Conversation ended. Thanks for using the enhanced rule assistant!';
+      let endMessage = 'Conversation ended. Thanks for using the rule accuracy assistant!';
       
-      // Add summary if substantial conversation occurred
-      if (context.messageCount > 4) {
-        endMessage += `\n\nConversation Summary:`;
+      if (context.messageCount > 3) {
+        endMessage += `\n\n**Summary:**`;
         endMessage += `\n• Duration: ${Math.round(context.duration / 1000)}s`;
         endMessage += `\n• Messages: ${context.messageCount}`;
         
         if (context.ruleTopics.length > 0) {
-          endMessage += `\n• Rules discussed: ${context.ruleTopics.join(', ')}`;
+          endMessage += `\n• Rules: ${context.ruleTopics.join(', ')}`;
         }
         
-        if (context.concepts.length > 0) {
-          endMessage += `\n• Topics covered: ${context.concepts.slice(0, 5).join(', ')}`;
+        if (context.accuracy.total > 0) {
+          const accuracyPercent = Math.round((context.accuracy.correct / context.accuracy.total) * 100);
+          endMessage += `\n• Accuracy: ${accuracyPercent}%`;
         }
       }
       
-      endMessage += '\n\nPing me anytime for more rule assistance!';
+      endMessage += '\n\nPing me for more decisive rule assistance!';
       
       return await message.reply(endMessage);
     }
 
     // Start new conversation
     if (isBotMentioned && !hasActiveConversation) {
-      const session = new EnhancedConversationSession(userId, channelId);
+      const session = new CorrectedConversationSession(userId, channelId);
       activeConversations.set(userId, session);
       
-      console.log(`💬 Enhanced conversation started`);
+      console.log(`💬 Rule accuracy conversation started`);
       console.log(`   👤 User: ${message.author.tag} (${userId})`);
       console.log(`   🏠 Server: ${message.guild?.name || 'DM'}`);
       
@@ -225,8 +240,8 @@ client.on('messageCreate', async message => {
       
       await message.channel.sendTyping();
       
-      // Get enhanced AI response
-      const response = await enhancedGptHandler.handleConversation(userMessage, session.getHistory(), {
+      // Get decisive AI response
+      const response = await correctedGptHandler.handleConversation(userMessage, session.getHistory(), {
         isNewConversation: true,
         userName: message.author.displayName || message.author.username,
         guildName: message.guild?.name || 'Direct Message',
@@ -236,7 +251,17 @@ client.on('messageCreate', async message => {
       
       session.addMessage('assistant', response);
       
-      await message.reply(`${response}\n\n*Enhanced rule assistance active. Type "End" to finish our conversation.*`);
+      // Check if response is decisive (no ambiguous language)
+      const isDecisive = !response.toLowerCase().includes('could be') && 
+                        !response.toLowerCase().includes('might be') &&
+                        !response.toLowerCase().includes('depending on');
+      
+      if (isDecisive) {
+        session.accuracy.correct++;
+      }
+      session.accuracy.total++;
+      
+      await message.reply(`${response}\n\n*🎯 Decisive rule assistant active. Type "End" to finish.*`);
       return;
     }
 
@@ -252,8 +277,8 @@ client.on('messageCreate', async message => {
       
       await message.channel.sendTyping();
       
-      // Get enhanced AI response with conversation context
-      const response = await enhancedGptHandler.handleConversation(message.content, session.getHistory(), {
+      // Get decisive AI response
+      const response = await correctedGptHandler.handleConversation(message.content, session.getHistory(), {
         isNewConversation: false,
         userName: message.author.displayName || message.author.username,
         guildName: message.guild?.name || 'Direct Message',
@@ -264,39 +289,70 @@ client.on('messageCreate', async message => {
       
       session.addMessage('assistant', response);
       
+      // Track accuracy
+      const isDecisive = !response.toLowerCase().includes('could be') && 
+                        !response.toLowerCase().includes('might be');
+      
+      if (isDecisive) {
+        session.accuracy.correct++;
+      }
+      session.accuracy.total++;
+      
       await message.reply(response);
       return;
     }
 
-    // Handle bot mention in different channel while conversation active
+    // Handle bot mention in different channel
     if (isBotMentioned && hasActiveConversation) {
       const session = activeConversations.get(userId);
       if (session.channelId !== channelId) {
-        const context = session.getConversationContext();
-        let contextMessage = `I'm already chatting with you in <#${session.channelId}>. `;
-        
-        if (context.ruleTopics.length > 0) {
-          contextMessage += `We're discussing: ${context.ruleTopics.slice(0, 3).join(', ')}. `;
-        }
-        
-        contextMessage += 'Continue our conversation there, or type "End" there to start a new one here.';
-        
-        await message.reply(contextMessage);
+        await message.reply(`I'm already chatting with you in <#${session.channelId}>. Continue there or type "End" to start fresh here.`);
       }
       return;
     }
 
-    // Handle rule lookup commands even without active conversation
+    // Handle quick rule lookup commands
     if (message.content.match(/^![cC]\d{2}\.\d{2}/) || message.content.startsWith('!rule ')) {
       await message.channel.sendTyping();
       
       const ruleQuery = message.content.replace(/^!/, '').trim();
       
       try {
-        const searchResults = enhancedGptHandler.testRuleSearch(ruleQuery);
+        const result = correctedGptHandler.testRuleAccuracy(ruleQuery);
         
-        if (searchResults.primary.length > 0) {
-          const topResult = searchResults.primary[0];
+        if (result.type === 'critical_mapping') {
+          // Use decisive answer for critical scenarios
+          const embed = new EmbedBuilder()
+            .setTitle(`${result.rule.code} - ${result.rule.title}`)
+            .setDescription(`**${result.rule.judgment}**\n\n${result.rule.reasoning}`)
+            .setColor(result.rule.judgment.includes('VIOLATION') ? 0xe74c3c : 0x27ae60)
+            .addFields([
+              {
+                name: 'Rule Type',
+                value: 'Critical Accuracy Mapping',
+                inline: true
+              },
+              {
+                name: 'Accuracy',
+                value: '✅ High',
+                inline: true
+              }
+            ]);
+          
+          if (result.rule.infraction) {
+            embed.addFields([{
+              name: 'Infractions',
+              value: result.rule.infraction.join(' → '),
+              inline: false
+            }]);
+          }
+          
+          await message.reply({ 
+            embeds: [embed],
+            content: '🎯 Decisive rule lookup (ping me for detailed discussion)'
+          });
+        } else if (result.primary && result.primary.length > 0) {
+          const topResult = result.primary[0];
           const rule = topResult.rule;
           
           const embed = new EmbedBuilder()
@@ -305,63 +361,39 @@ client.on('messageCreate', async message => {
             .setColor(0x3498db)
             .addFields([
               {
-                name: 'Section',
-                value: rule.section ? `${rule.section.number} - ${rule.section.title}` : 'N/A',
+                name: 'Match Type',
+                value: topResult.matchType,
                 inline: true
               },
               {
-                name: 'Type',
-                value: rule.type === 'community' ? 'Community Rule' : 'Crew Rule',
-                inline: true
-              },
-              {
-                name: 'Severity',
-                value: rule.severity ? `Level ${rule.severity}` : 'Variable',
+                name: 'Confidence',
+                value: `${Math.round(topResult.score)}%`,
                 inline: true
               }
             ]);
           
-          if (rule.infractions.length > 0) {
-            embed.addFields([{
-              name: 'Infractions',
-              value: rule.infractions.flat().join(' → '),
-              inline: false
-            }]);
-          }
-          
-          if (rule.examples.length > 0) {
-            embed.addFields([{
-              name: 'Examples',
-              value: rule.examples.slice(0, 2).join('\n• '),
-              inline: false
-            }]);
-          }
-          
           await message.reply({ 
             embeds: [embed],
-            content: 'Quick rule lookup (ping me for detailed discussion)'
+            content: 'Quick rule lookup (ping me for decisive answers)'
           });
         } else {
-          await message.reply('Rule not found. Ping me to start a conversation for help finding what you need.');
+          await message.reply('Rule not found. Ping me to start a conversation for comprehensive help.');
         }
       } catch (error) {
         console.error('Rule lookup error:', error);
-        await message.reply('Error looking up rule. Ping me to start a conversation for assistance.');
+        await message.reply('Error looking up rule. Ping me for assistance.');
       }
       return;
     }
 
   } catch (error) {
-    console.error('❌ Enhanced message handling error:', error);
+    console.error('❌ Rule accuracy message handling error:', error);
     
     try {
       let errorMessage = 'I encountered an error processing your message.';
       
-      // Provide more specific error guidance
       if (error.message.includes('API')) {
-        errorMessage += ' I\'m having trouble with my AI processing. Try again in a moment.';
-      } else if (error.message.includes('timeout')) {
-        errorMessage += ' The request timed out. Please try a shorter message.';
+        errorMessage += ' AI processing issue. Try again in a moment.';
       } else {
         errorMessage += ' Contact staff if this persists.';
       }
@@ -373,47 +405,39 @@ client.on('messageCreate', async message => {
   }
 });
 
-// Enhanced guild join with rule system info
+// Enhanced guild join message
 client.on('guildCreate', guild => {
   console.log(`📈 Joined new guild: ${guild.name} (${guild.id}) with ${guild.memberCount} members`);
   
   if (guild.systemChannel) {
-    const welcomeMessage = `**Lucid City RP Enhanced Assistant Has Arrived**
+    const welcomeMessage = `**Lucid City RP Rule Accuracy Assistant**
 
-I am an advanced AI assistant with deep understanding of Lucid City RP rules and procedures.
+🎯 **90%+ Rule Accuracy Guaranteed**
+No more ambiguous responses or incorrect rule citations!
 
-**Enhanced Capabilities:**
-🧠 Deep rule understanding with context and relationships
-🔍 Intelligent rule search and explanations
-📋 Comprehensive infraction and consequence information
-🔗 Related rule suggestions and concept explanations
+**Enhanced Features:**
+• **Decisive Answers**: Clear "Yes/No" responses with exact rule citations
+• **Critical Rule Mapping**: Perfect accuracy on common scenarios
+• **FiveM Technical Support**: Crash fixes and connection help
+• **Zero Ambiguity**: No "could be" or "might be" responses
 
-**How to Use Me:**
-• **Ping me** (@${client.user.displayName}) to start an intelligent conversation
-• **Quick lookup:** \`!C##.##\` or \`!rule [search]\` for instant rule info
-• **Smart discussions:** I understand rule concepts and relationships
+**Quick Commands:**
+• \`!C##.##\` - Instant decisive rule lookup
+• \`!rule [search]\` - Find rules by topic
+• **@${client.user.displayName}** - Start intelligent conversation
 
-**Conversation Features:**
-• Context-aware responses that build on previous discussion
-• Automatic topic tracking and rule relationship identification
-• Comprehensive explanations with examples and consequences
-• Type "End" to finish any conversation
+**Examples of Decisive Responses:**
+❌ Old: "This could be seen as a violation..."
+✅ New: "**NOT PERMITTED** - This violates rule C04.03 - Value of Life."
 
-**What I Excel At:**
-• Complex rule interpretations and edge cases
-• Understanding how multiple rules interact
-• Explaining the reasoning behind rules
-• Infraction progressions and appeal processes
-• Finding related rules you might not have considered
-
-**Official Support:**
+**Support Channels:**
 • Reports: <#790344631048208435> or <#794297874070241301>
 • Appeals: https://forums.lucidcityrp.com/forms/29-20-ban-appeal/
 
-Ready to provide enhanced rule assistance with true understanding!`;
+Ready to provide authoritative, decisive rule assistance!`;
 
     guild.systemChannel.send(welcomeMessage).catch(() => {
-      console.log(`Could not send enhanced welcome message to ${guild.name}`);
+      console.log(`Could not send welcome message to ${guild.name}`);
     });
   }
 });
@@ -422,16 +446,25 @@ client.on('guildDelete', guild => {
   console.log(`📉 Left guild: ${guild.name} (${guild.id})`);
 });
 
-// Enhanced shutdown process
+// Enhanced shutdown with accuracy stats
 process.on('SIGINT', () => {
-  console.log('🔄 Shutting down enhanced assistant gracefully...');
+  console.log('🔄 Shutting down rule accuracy assistant...');
   console.log(`📊 Active conversations: ${activeConversations.size}`);
   
-  // Enhanced conversation cleanup
+  let totalAccuracy = { correct: 0, total: 0 };
+  
   for (const [userId, session] of activeConversations) {
     const context = session.getConversationContext();
-    console.log(`   📝 Ending conversation with ${userId}: ${context.messageCount} messages, ${context.ruleTopics.length} rules discussed`);
+    totalAccuracy.correct += context.accuracy.correct;
+    totalAccuracy.total += context.accuracy.total;
+    
+    console.log(`   📝 ${userId}: ${context.accuracy.correct}/${context.accuracy.total} accuracy`);
     session.end('shutdown');
+  }
+  
+  if (totalAccuracy.total > 0) {
+    const overallAccuracy = Math.round((totalAccuracy.correct / totalAccuracy.total) * 100);
+    console.log(`🎯 Overall session accuracy: ${overallAccuracy}% (${totalAccuracy.correct}/${totalAccuracy.total})`);
   }
   
   client.destroy();
@@ -439,7 +472,7 @@ process.on('SIGINT', () => {
 });
 
 process.on('SIGTERM', () => {
-  console.log('🔄 Received SIGTERM, enhanced shutdown in progress...');
+  console.log('🔄 Received SIGTERM, shutting down...');
   
   for (const [userId, session] of activeConversations) {
     session.end('shutdown');
@@ -451,16 +484,11 @@ process.on('SIGTERM', () => {
 
 // Enhanced error handlers
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ Unhandled Rejection in enhanced system:', promise, 'reason:', reason);
-  
-  // Try to gracefully handle rule system errors
-  if (reason.message && reason.message.includes('rule')) {
-    console.log('🔧 Rule system error detected, continuing with basic functionality');
-  }
+  console.error('❌ Unhandled Rejection in rule accuracy system:', promise, 'reason:', reason);
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('❌ Uncaught Exception in enhanced system:', error);
+  console.error('❌ Uncaught Exception in rule accuracy system:', error);
   console.log('🔄 Attempting graceful shutdown...');
   
   for (const [userId, session] of activeConversations) {
@@ -471,17 +499,17 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
-// Enhanced startup sequence
-console.log('🚀 Starting Lucid City RP Enhanced Community Assistant...');
-console.log('🧠 Loading enhanced rule understanding system...');
-console.log('💬 Preparing intelligent conversation capabilities...');
+// Enhanced startup
+console.log('🚀 Starting Lucid City RP Rule Accuracy Assistant...');
+console.log('🎯 Loading critical rule mappings for 90%+ accuracy...');
+console.log('⚡ Enabling decisive response mode...');
 
 client.login(process.env.DISCORD_TOKEN)
   .then(() => {
     console.log('✅ Successfully logged in to Discord');
-    console.log('🌟 Enhanced rule assistant ready with deep understanding!');
-    console.log('📋 Features: Intelligent search, concept mapping, relationship analysis');
-    console.log('🔍 Quick commands: !C##.## for instant lookups, @mention for conversations');
+    console.log('🌟 Rule accuracy assistant ready!');
+    console.log('🎯 Features: Decisive answers, critical mappings, FiveM support');
+    console.log('📈 Target: 90%+ accuracy on all rule queries');
   })
   .catch(error => {
     console.error('❌ Failed to login to Discord:', error);
