@@ -1,0 +1,198 @@
+LUCID CITY ROLEPLAY
+
+CREW REGULATORY GUIDELINES
+
+ 
+
+SECTION 01 - PAGE INFORMATION:
+
+ 
+
+C01.01 - JURISDICTION:
+General Information: These are the official crew regulatory guidelines of the Lucid City roleplay public server. These regulatory guidelines dictate and set forth the expectations for the crew members of Lucid City public. These guidelines are applicable to crew members during crew activities and crew server communications.
+ 
+
+C01.02 - CORRECTIVE ACTION:
+General Information: Conduct and actions that has been deemed inappropriate, destructive, malicious, and/or unfitting for that of a crew will be handled in accordance with the crew regulatory guidelines. Repeatedly engaging in this sort of conduct will result in actions ranging from crew classifications to a disbandment and blacklist.
+ 
+
+C01.03 - INFRACTION CLASSIFICATIONS:
+General Information: The crew guidelines are marked with specific classifications to set forth the severity and impact of the various infractions. These classifications determine the actions which will be taken against crew members and the crew as a whole should it be in violation of one or several crew guidelines. The maximum amount of infraction points a crew may total prior to a disbandment is 1000. These classifications are as follows:
+ 
+
+CREW INFRACTION GUIDELINES:
+Classification A: A warning which will be registered on the record of the crew should the same infraction be repeated or an infraction which mandates the crew to pay a total of $50,000, as well as receiving 25 infraction points to their record. These infraction points will expire from your crew record after 3 months.
+Classification B: A warning which will be registered on the record of the crew should the same infraction be repeated or an infraction which mandates the crew to pay a total of $100,000, as well as receiving 50 infraction points to their record. These infraction points will expire from your crew record after 6 months.
+Classification C: A warning which will be registered on the record of the crew should the same infraction be repeated or an infraction which mandates the crew to pay a total of $200,000, as well as receiving 100 infraction points to their record. These infraction points will expire from your crew record after 6 months.
+Classification D: An infraction which mandates the crew to pay a total of $300,000, as well as receiving 200 infraction points to your total infraction point record. These infraction points will expire from your crew record after 12 months. Repeating the same infraction three times within this category will lead to automatic disbandment.
+Classification E: An infraction which mandates the crew to pay a total of $500,000, as well as receiving 350 infraction points to your total infraction point record. These infraction points will expire from your crew record after 12 months. Repeating the same infraction twice within this category will lead to automatic disbandment.
+Classification F: An infraction which mandates the crew to pay a total of $1,000,000, as well as receiving 550 infraction points to your total infraction point record. These infraction points will not expire from your crew record. Repeating an infraction of this magnitude will result in being disbanded without further discussion.
+ 
+
+SPECIALIZED INFRACTION GUIDELINES:
+Crew Disbandment (CD): An infraction that is issued upon a crew that has surpassed the infraction point maximum by Lucid City management due to representing themselves as a repeat offender crew. This infraction results in the specified crew being disbanded and shattered indefinitely. If forcefully disbanded, the crew may be recreated after 4-months.
+Crew Blacklist (CB): An infraction that can be issued upon a crew and/or a crew individual that has surpassed the infraction point maximum by Lucid City management due to representing themselves as repeat offenders. This infraction results in either the crew not being able to reform in the future with more than 6 of the original members and/or one or several of the individuals a part of the crew being blacklisted indefinitely from partaking in any crew.
+ 
+
+C01.04 - REPORT TIMERS:
+General Information: Infraction timers determine the validity of an infraction's report timeframe. Reporting other crews outside of this window is prohibited. If someone's actions negatively impacts the immersion of you and your crew, take action there and then, not at a later time. A report must be filed within 24-hours of the incident, otherwise, it will be invalid.
+ 
+
+SECTION 02 - CREW CREATION:
+
+ 
+
+C02.01 - CREW MANAGEMENT SERVER MANDATE:
+Infraction Category: [A > B > CD]
+General Information: Members, officers, and leaders of a crew are mandated to be part of the crew management Discord server for easy access and communication between staff and members of the crew. The responsibility of this task falls on the crew leadership and officers and will be enforced strictly by crew management.
+ 
+
+C02.02 - STRUCTURAL INFORMATION:
+Infraction Category: [A > B > CD]
+General Information: Creating a crew comes with a few expectations as you are a criminal organization. One of these expectations is to create an appropriate structure which fits your style of roleplay. This allows for your crew to place members in respective categories such as member, officer, and leadership. The limitations of these categories are as follows:
+Tablet Holder: The tablet holder is recognized as the owner and true leader of a crew.
+Crew Leader(s): Crew leaders are second to the tablet holder and may consist of up to two individuals.
+Crew Officer(s): Crew officers are members with more responsibilities and can consist of up to five individuals.
+Crew Member(s): This category if the rest of the categories are filled consists up to twenty four individuals.
+ 
+
+C02.03 - INTENT TO ROLEPLAY POLICY:
+Infraction Category: [D]
+General Information: Upon the creation and registration of your crew with crew management, you are expected as a crew to seek an identity to set you apart from other crews. What do you wish for your crew to be known for? What sort of roleplay do you engage in and seek? What type of crew are you? What are your goals and aspirations? Creating a crew and instantly waging war against everyone is prohibited, this is not a valid reason to start a crew.
+ 
+
+SECTION 03 - CREW REPRESENTATION:
+
+ 
+
+C03.01 - CLOTHING IDENTIFICATION MANDATE:
+Infraction Category: [B > D]
+General Information: A crew is required to choose a series of clothing combinations for their members to wear in order to represent their crew affiliation during active conflict. Each individual crew may have two outfits for males and two for females due to the variety in clothing availability. The combinations chosen must make sense in regard to color profiles, these clothes must be worn at all times during crew activities, there are no exceptions. Initiation of conflict over clothing is not permitted, however, the only exception is identifiers such as flags.
+ 
+
+C03.02 - VEHICLE IDENTIFICATION MANDATE:
+Infraction Category: [C > D]
+General Information: Crews are expected to choose a color profile for their vehicles to be used during crew activities. These combinations can vary from primary color to secondary, pearlescent, wheels, and so on. However, vehicle identification is not grounds to kill on sight during an active crew conflict or engagement, you must confirm who you are taking your shot at. Failure to do so can result in consequences with members of crew management and staff if reported.
+ 
+
+SECTION 04 - CONFLICTS, DISPUTES & ENGAGEMENTS:
+
+ 
+
+C04.01 - IMPROPER INITIATION OF CONFLICT:
+Infraction Category: [B > D]
+General Information: Initiating prolonged conflicts, disputes, and/or engagements over reasons that do not make sense or originate outside of the boundaries of roleplay is prohibited. This is a roleplay server, the goal is to ensure a memorable and enjoyable experience for all involved. Below you can see a list of examples of things not to initiate conflict over:
+Minor to moderate levels of shit talking against one or several members of your crew.
+Initiation of conflict over valuables lost to law enforcement as a result of your own actions.
+Initiating conflict with another crew over minor incidents such as traffic related accidents.
+Another crew managed to gain priority over a heist before your own crew could gain priority.
+Bruised feelings as a result of comments made within roleplay and/or outside of roleplay.
+Presence in highly hostile areas with the intent to be shot at in order to justify shooting back.
+Conflict related to reasons such as vehicle identification colors.
+Starting conflict with "You have X amount of time to leave or you're dead."
+Any sort of conflict which can be compared to what is listed in C02.03.
+ 
+
+C04.02 - THIRD PARTY INTERVENTION:
+Infraction Category: [C > D]
+General Information: Members of a crew are prohibited from engaging in activities related to another crew on their behalf. Engaging in crew related conflict on behalf of others whenever not part of that crew circle is interference and should be avoided. Alliances between crews are not permitted in conflict and disputes. Avoid endangering your own crew due to personal affiliations to others.
+ 
+
+SECTION 05 - TAXATION GUIDELINES:
+
+ 
+
+C05.01 - INDIVIDUAL TAXATION:
+Infraction Category: [B > C > D]
+General Information: Crews are allowed to engage in the taxing of other individuals for as long as they offer something in return, such as protection within specific areas and zones while carrying out specific activities as an example. These taxes can be collected once every server restart, which is 8 hours. The maximum amount an individual can be taxed for is $10,000, and this does not give you the justification to max it out unless you are making it out to be WORTH IT. You are not permitted to make agreements with other crews to double tax others, this would also be in violation of C04.02.
+ 
+
+C05.02 - CORPORATE TAXATION:
+Infraction Category: [C > D]
+General Information: Crews are also allowed to engage in the taxation of businesses and corporate entities for as long as they offer the same services as listed in C05.01, however, not restrictive to any specific areas. The maximum a business can be taxed for is a total of $100,000, which can be collected once a week. This does not give you justification to max it out unless you are going to make it out to be WORTH IT. You are not permitted to make agreements with other crews to double tax others, this would also be in violation of C04.02.
+ 
+
+SECTION 06 - EXTERNAL CONDUCT:
+
+ 
+
+C06.01 - COMMUNICATION HUBS & SOFTWARE:
+Infraction Category: [B > C > D]
+General Information: Crews are prohibited from using external communication hubs and software to gain an advantage within roleplay. This includes but is not limited to software such as Discord, TeamSpeak, Skype, and so on. There are features within roleplay that may be used to communicate. Take use of those features instead.
+ 
+
+C06.02 - INTENT TO CHEAT & EXPLOIT:
+Infraction Category: [F > CD + CB]
+General Information: Exploiters and cheaters are not welcome within this community. Knowingly recruiting them and/or gaining benefits from them will make you equally guilty and accountable for their actions and yours. If you suspect or have evidence of one or several members of your crew to be engaging in conduct resembling this, report it to staff as the consequences if caught are grave. This also includes being repeatedly caught with members that engage in this sort of conduct as it makes you unfit for leadership. Furthermore, any crew that has a member with leader or tablet holder status will be instantly disbanded and blacklisted. This isn't the 2010's when people used cheat engine and no one cared, go elsewhere.
+ 
+
+SECTION 07 - REPORT GUIDELINES:
+
+ 
+
+C07.01 - INESSENTIAL & PETTY REPORTS:
+Infraction Category: [C > D]
+General Information: Lucid City is a roleplay server first and foremost, focus on handling your differences and issues within roleplay. If the actions of another crew is in violation of Lucid City's regulatory guidelines, report it should it be causing any disruptions to your immersion and roleplay. However, reporting just to get others in trouble will not be tolerated, you will be held accountable.
+ 
+
+C07.02 - RETALIATORY REPORTS:
+Infraction Category: [D > E]
+General Information: Retaliatory reporting is not welcome within this community. Should an incident disturb and interfere with your roleplay, report it immediately, not later to take revenge for whatever reason. Refer to C01.04 for the specific time window of validity, reporting outside of the established time window may result in being held accountable under C07.01.
+ 
+
+SECTION 08 - COMMON SENSE & DECENCY:
+
+ 
+
+C08.01 - REALISTIC INTERACTIONS:
+Infraction Category: [B > C > D]
+General Information: Conflicts and engagements between crews will often lead to animosity and a certain level of tensions. However, excessive levels of verbal engagements shall be avoided, especially within the following areas. These areas are neutral zones with protective zones, refrain from hiding inside and behind them for cover while verbally engaging your foes. These are as follows:
+Mount Zonah Medical Center
+Sandy Shores Medical Center
+Paleto Bay Medical Center
+Roxwood Medical Center
+Apartment Complexes
+ 
+
+C08.02 - UNWARRANTED INTERACTIONS:
+Infraction Category: [C > D > E]
+General Information: Excessive and unprovoked actions are unwelcome and should be avoided. Your priority within roleplay should be to provide quality interactions and experiences for others, whether they be foes or friends. We are all here to have a memorable and enjoyable experience, give to others for what you wish for them to give to you. Provoking others with acts of malice in order to be a nuisance, disturb, and negatively impact their player experience is prohibited. Some examples of this are as follows:
+Collecting bodies and dumping them in a pile to talk negatively and camp.
+Using your vehicle to repeatedly run over one or several downed crew members.
+Excessively teabagging and/or using emotes over a downed crew member after eliminating them.
+Excessively shooting one or several bodies after they have already been downed. Stop wasting ammo, #ClimateChange.
+ 
+
+SECTION 09 - GOVERNMENT PERSONNEL INTERACTIONS:
+
+ 
+
+C09.01 - LAW ENFORCEMENT INTERACTIONS:
+Infraction Category: [A > D > E]
+General Information: Law enforcement officers and personnel are a support aspect of realistic roleplay. The responsibility of law enforcement is to enforce local and state laws and hold criminals accountable. Avoid getting yourself in the crosshair of law enforcement without it being absolutely necessary, they are to be feared as they may make your life as a criminal very difficult. Examples of what not to do:
+Ambushing them over a traffic stop is prohibited. Roleplay it out, do not ruin their experiences.
+Baiting law enforcement to pursue you only to turn it into an ambush. If you bait, that is on you, take the consequences on your own.
+Intentionally and repeatedly engaging in shootouts with Law Enforcement to avoid jail time is prohibited. Players are expected to find more creative methods of evading Law Enforcement. 
+ 
+
+C09.02 - MEDICAL SERVICE INTERACTIONS:
+Infraction Category: [E > F]
+General Information: Members of the emergency medical service and fire department are support aspects of roleplay. They pose zero harm to others, so you are to pose zero harm to them. Should you run into an incident where they are intervening with an active engagement, instruct them to leave, and if they refuse, then do what you have to. Violence should be a last resort against medical personnel.
+ 
+
+SECTION 10 - CREW MANAGEMENT DIRECTIVES:
+
+ 
+
+C09.01 - CONFLICT RELATED:
+Infraction Category: [E > F]
+General Information: Directives pertaining to an active or inactive conflict with another crew shall be followed to the letter. Failure to do so will lead to severe consequences, these directives were put into place for a reason. These directives can be instructions such as ceasefires, forced conflicts and wars, and so on.
+ 
+
+SECTION 11 - CREW ROAMING GUIDELINES:
+
+ 
+
+C11.01 - ROAMING LIMITATIONS:
+Infraction Category: [B > E]
+General Information: As members of a crew you are allocated additional roaming slots as crews should be a force to be reckoned with. The standard roaming limitation for members is 6, but for a crew it is 16 individuals. However, this limitation is 6 should you encounter any interaction with law enforcement officers. Crews are also permitted to have their full roster present during any turf contests.
