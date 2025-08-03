@@ -183,17 +183,38 @@ class CompleteRulesLoader {
 
   getCompleteRulesContext(searchTerms) {
     const relevantRules = [];
+    const ruleScores = new Map(); // Track rule relevance scores
     
     searchTerms.forEach(term => {
       const results = this.searchRules(term);
-      results.slice(0, 2).forEach(rule => {
+      results.forEach(rule => {
         if (!relevantRules.find(r => r.code === rule.code)) {
           relevantRules.push(rule);
+          ruleScores.set(rule.code, 1);
+        } else {
+          // Increase score for rules found multiple times
+          ruleScores.set(rule.code, ruleScores.get(rule.code) + 1);
         }
       });
     });
     
-    return relevantRules.slice(0, 3).map(rule => 
+    // Sort by relevance score and prioritize general conduct rules over government-specific ones
+    relevantRules.sort((a, b) => {
+      const scoreA = ruleScores.get(a.code);
+      const scoreB = ruleScores.get(b.code);
+      
+      // Deprioritize government-specific rules (C05.xx) unless specifically about government
+      const isGovA = a.code.startsWith('C05');
+      const isGovB = b.code.startsWith('C05');
+      
+      if (isGovA && !isGovB) return 1; // B comes first
+      if (!isGovA && isGovB) return -1; // A comes first
+      
+      // Otherwise sort by score
+      return scoreB - scoreA;
+    });
+    
+    return relevantRules.slice(0, 4).map(rule => 
       `${rule.code} - ${rule.title}:\n${rule.content}`
     ).join('\n\n---\n\n');
   }

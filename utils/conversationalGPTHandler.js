@@ -73,22 +73,33 @@ class ConversationalGPTHandler {
       keywords.push(...ruleCodes);
     }
     
-    // Important rule-related terms with better matching
-    const ruleTerms = [
-      'roam', 'roaming', 'group', 'limit', 'people', 'players', 'crew', 'many',
-      'rob', 'robbery', 'rdm', 'vdm', 'meta', 'power', 'combat', 'log', 'character', 'break',
-      'gang', 'police', 'ems', 'government', 'ban', 'appeal', 'report', 'infraction',
-      'heist', 'fleeca', 'pacific', 'hostage', 'safe', 'zone', 'restart', 'tsunami',
-      'discrimination', 'toxic', 'grief', 'scam', 'exploit', 'cheat', 'mod'
-    ];
+    // Context-specific keywords to avoid wrong rule matching
+    const contextualTerms = {
+      roaming: ['roam', 'roaming', 'group', 'limit', 'people', 'players', 'crew', 'many'],
+      general_conduct: ['rob', 'robbery', 'shoot', 'attack', 'violence', 'conflict', 'beef', 'pressing'],
+      character: ['character', 'break', 'meta', 'power', 'combat', 'log'],
+      reporting: ['ban', 'appeal', 'report', 'infraction', 'staff'],
+      heists: ['heist', 'fleeca', 'pacific', 'hostage'],
+      zones: ['safe', 'zone', 'restart', 'tsunami'],
+      toxicity: ['discrimination', 'toxic', 'grief', 'scam', 'exploit', 'cheat', 'mod']
+    };
     
-    words.forEach(word => {
-      if (ruleTerms.includes(word)) {
-        keywords.push(word);
-      }
-    });
+    // Only add law enforcement keywords if context actually involves police/government
+    if (text.includes('police') || text.includes('cop') || text.includes('officer') || 
+        text.includes('government') || text.includes('ems') || text.includes('law enforcement')) {
+      keywords.push('police', 'law', 'enforcement', 'government');
+    }
     
-    return keywords.slice(0, 5); // Limit keywords
+    // Add relevant contextual terms
+    for (const [category, terms] of Object.entries(contextualTerms)) {
+      terms.forEach(term => {
+        if (words.includes(term)) {
+          keywords.push(term);
+        }
+      });
+    }
+    
+    return keywords.slice(0, 6); // Slightly increased limit
   }
 
   buildSystemPrompt(userName, guildName, isNewConversation, guildId, rulesContext = '') {
@@ -136,6 +147,16 @@ CRITICAL RULE ACCURACY:
 - Only say "I don't have that specific rule information available" if the context is truly empty or doesn't contain relevant rules
 - When you have C06.01 and/or C11.01 in the context, confidently answer roaming questions
 - Be direct and helpful when you have the rule information available
+
+RULE APPLICABILITY - CRITICAL:
+- C05.01 (LAW ENFORCEMENT INTERACTIONS) - ONLY applies to interactions WITH law enforcement officers/police
+- C05.02 (GOVERNMENT ROBBERIES) - ONLY applies to robbing government employees (police, EMS, etc.)
+- C05.03 (EMERGENCY MEDICAL SERVICE) - ONLY applies to interactions with EMS personnel
+- C05.04 (GOVERNMENT CORRUPTION) - ONLY applies to government employees abusing their powers
+- C05.05 (GOVERNMENT IMPERSONATION) - ONLY applies to pretending to be government employees
+- Section 05 rules are GOVERNMENT-SPECIFIC and should NOT be applied to civilian vs civilian situations
+- For general conduct between civilians, look for rules in other sections like C03 (Unreasonable Conduct), C04 (Character Conduct), C06 (Robbery & Roaming), C09 (Hostile Conduct)
+- NEVER cite government/law enforcement rules for civilian situations
 
 TECHNICAL INFORMATION:
 - Lucid City RP is a FiveM roleplay server
