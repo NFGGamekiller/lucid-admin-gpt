@@ -1,4 +1,5 @@
 const OpenAI = require('openai');
+const rulesLoader = require('./completeRulesLoader');
 
 class ConversationalGPTHandler {
   constructor() {
@@ -11,14 +12,17 @@ class ConversationalGPTHandler {
     try {
       const { isNewConversation, userName, guildName, guildId } = context;
 
-      const systemPrompt = this.buildSystemPrompt(userName, guildName, isNewConversation, guildId);
+      // Get relevant rules context from the complete documents
+      const rulesContext = this.extractRulesContext(userMessage, conversationHistory);
+
+      const systemPrompt = this.buildSystemPrompt(userName, guildName, isNewConversation, guildId, rulesContext);
       const messages = this.buildMessageHistory(conversationHistory, systemPrompt);
 
       const completion = await this.openai.chat.completions.create({
         model: 'gpt-4',
         messages: messages,
-        temperature: 0.4,
-        max_tokens: 800,
+        temperature: 0.3,
+        max_tokens: 1000,
         presence_penalty: 0.1,
         frequency_penalty: 0.1
       });
@@ -31,7 +35,52 @@ class ConversationalGPTHandler {
     }
   }
 
-  buildSystemPrompt(userName, guildName, isNewConversation, guildId) {
+  extractRulesContext(userMessage, conversationHistory) {
+    // Extract keywords from the user's message and conversation
+    const keywords = this.extractKeywords(userMessage);
+    
+    // Add keywords from recent conversation
+    const recentMessages = conversationHistory.slice(-3);
+    recentMessages.forEach(msg => {
+      keywords.push(...this.extractKeywords(msg.content));
+    });
+
+    // Get relevant rules from the complete documents
+    if (keywords.length > 0) {
+      return rulesLoader.getCompleteRulesContext(keywords);
+    }
+    
+    return '';
+  }
+
+  extractKeywords(text) {
+    const keywords = [];
+    const words = text.toLowerCase().split(/\s+/);
+    
+    // Look for rule codes
+    const ruleCodes = text.match(/[cC]\d{2}\.?\d{0,2}/g);
+    if (ruleCodes) {
+      keywords.push(...ruleCodes);
+    }
+    
+    // Important rule-related terms
+    const ruleTerms = [
+      'rob', 'robbery', 'rdm', 'vdm', 'meta', 'power', 'combat', 'log', 'character', 'break',
+      'crew', 'gang', 'police', 'ems', 'government', 'ban', 'appeal', 'report', 'infraction',
+      'heist', 'fleeca', 'pacific', 'hostage', 'safe', 'zone', 'restart', 'tsunami',
+      'discrimination', 'toxic', 'grief', 'scam', 'exploit', 'cheat', 'mod'
+    ];
+    
+    words.forEach(word => {
+      if (ruleTerms.includes(word)) {
+        keywords.push(word);
+      }
+    });
+    
+    return keywords.slice(0, 5); // Limit keywords
+  }
+
+  buildSystemPrompt(userName, guildName, isNewConversation, guildId, rulesContext = '') {
     const isMainServer = guildId === '776724970579165186';
     const serverContext = isMainServer ? 
       'You are in the main Lucid City server where all support is handled.' : 
@@ -58,21 +107,16 @@ YOUR ROLE:
 - DO NOT give information that would constitute meta gaming
 
 CONVERSATION STYLE:
-- Answer questions accurately and confidently based only on documented rules
+- Answer questions accurately and confidently based ONLY on the official rules provided
 - Skip small talk unless necessary for clarification
 - Avoid overly apologetic or friendly filler phrases
 - Remember context from earlier in the conversation
 - Provide follow-up guidance only if essential or requested
 - NEVER make up information not found in the official rules
 - NEVER provide roleplay scenarios, examples, or character guidance
+- When rules are not clear, direct users to staff for clarification
 
-LUCID CITY RP KNOWLEDGE:
-You have access to comprehensive knowledge about:
-- Community rules (Sections C01-C13) including infractions and penalties
-- Crew rules for gangs and organizations
-- Support channels and how to get help
-- Appeal processes and reporting procedures
-- Roleplay best practices and server culture
+${rulesContext ? `RELEVANT RULES CONTEXT:\n${rulesContext}\n\n` : ''}
 
 TECHNICAL INFORMATION:
 - Lucid City RP is a FiveM roleplay server
