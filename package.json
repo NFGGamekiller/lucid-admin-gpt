@@ -1,15 +1,27 @@
 {
   "name": "lucid-city-rp-assistant",
-  "version": "2.0.0",
-  "description": "Conversational AI assistant for the Lucid City RP community",
+  "version": "3.0.0",
+  "description": "Official Discord AI Bot for the Lucid City RP community - Rules and Support Assistant",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "node test/rulesTest.js",
+    "rules-stats": "node utils/rulesStats.js"
   },
-  "keywords": ["discord", "bot", "roleplay", "community", "assistant", "ai"],
-  "author": "Sergeant Brandon Lucas",
+  "keywords": [
+    "discord",
+    "bot",
+    "roleplay",
+    "community",
+    "assistant",
+    "ai",
+    "fivem",
+    "gta",
+    "rules",
+    "support"
+  ],
+  "author": "Lucid City RP Development Team",
   "license": "ISC",
   "engines": {
     "node": ">=18.0.0"
@@ -18,5 +30,16 @@
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.1",
     "openai": "^5.11.0"
-  }
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LucidCityRP/community-assistant"
+  },
+  "bugs": {
+    "url": "https://github.com/LucidCityRP/community-assistant/issues"
+  },
+  "homepage": "https://lucidcityrp.com"
 }
