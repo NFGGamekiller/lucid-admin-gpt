@@ -51,6 +51,12 @@ class ConversationalGPTHandler {
     if (keywords.length > 0) {
       const context = rulesLoader.getCompleteRulesContext(keywords);
       console.log(`📋 Using complete rules context: ${context.length} characters`);
+      
+      // Debug: log first 200 chars of context to see what rules are found
+      if (context.length > 0) {
+        console.log('📋 Context preview:', context.substring(0, 200) + '...');
+      }
+      
       return context;
     }
     
@@ -125,11 +131,11 @@ CONVERSATION STYLE:
 ${rulesContext ? `RELEVANT RULES CONTEXT (USE ONLY THIS INFORMATION):\n${rulesContext}\n\n` : ''}
 
 CRITICAL RULE ACCURACY:
-- ONLY provide information that is explicitly stated in the RELEVANT RULES CONTEXT above
-- If the user asks about rules not provided in the context, say "I don't have that specific rule information available. Contact staff for clarification."
-- DO NOT make assumptions about rules not explicitly provided
-- When discussing roaming limits, ONLY use the information from C06.01 and C11.01 if provided in context
-- Never state rules that are not directly quoted in the context above
+- CONFIDENTLY provide information that is explicitly stated in the RELEVANT RULES CONTEXT above
+- If you have relevant rules in the context, provide clear answers based on that information
+- Only say "I don't have that specific rule information available" if the context is truly empty or doesn't contain relevant rules
+- When you have C06.01 and/or C11.01 in the context, confidently answer roaming questions
+- Be direct and helpful when you have the rule information available
 
 TECHNICAL INFORMATION:
 - Lucid City RP is a FiveM roleplay server

@@ -85,10 +85,27 @@ class CompleteRulesLoader {
         currentContent = [line];
       } else if (currentRule && line) {
         currentContent.push(line);
-        
-        // Stop collecting when we hit a new section
-        if (line.startsWith('SECTION ') && currentContent.length > 1) {
-          break;
+      } else if (currentRule && !line) {
+        // Empty line - check if next non-empty line is a new rule or section
+        let j = i + 1;
+        while (j < lines.length && !lines[j].trim()) {
+          j++;
+        }
+        if (j < lines.length) {
+          const nextLine = lines[j].trim();
+          if (nextLine.match(rulePattern) || nextLine.startsWith('SECTION ')) {
+            // End of current rule
+            if (this.ruleMatchesSearch(currentRule, currentContent, searchTerm)) {
+              results.push({
+                code: currentRule.code,
+                title: currentRule.title,
+                content: currentContent.join('\n'),
+                type: type
+              });
+            }
+            currentRule = null;
+            currentContent = [];
+          }
         }
       }
     }
