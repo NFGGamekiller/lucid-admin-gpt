@@ -1,5 +1,14 @@
 const OpenAI = require('openai');
-const rulesLoader = require('./completeRulesLoader');
+
+// Try to load the complete rules loader, fallback to old database if needed
+let rulesLoader;
+try {
+  rulesLoader = require('./completeRulesLoader');
+  console.log('✅ Using complete rules loader');
+} catch (error) {
+  console.log('⚠️ Complete rules loader not found, falling back to rules database');
+  rulesLoader = require('./rulesDatabase');
+}
 
 class ConversationalGPTHandler {
   constructor() {
@@ -45,9 +54,24 @@ class ConversationalGPTHandler {
       keywords.push(...this.extractKeywords(msg.content));
     });
 
+    console.log(`🔍 Extracted keywords: ${keywords.join(', ')}`);
+
     // Get relevant rules from the complete documents
     if (keywords.length > 0) {
-      return rulesLoader.getCompleteRulesContext(keywords);
+      try {
+        let context = '';
+        if (rulesLoader.getCompleteRulesContext) {
+          context = rulesLoader.getCompleteRulesContext(keywords);
+          console.log(`📋 Using complete rules context: ${context.length} characters`);
+        } else if (rulesLoader.getRuleContext) {
+          context = rulesLoader.getRuleContext(keywords);
+          console.log(`📋 Using fallback rules context: ${context.length} characters`);
+        }
+        return context;
+      } catch (error) {
+        console.error('❌ Error getting rules context:', error);
+        return '';
+      }
     }
     
     return '';
@@ -65,10 +89,12 @@ class ConversationalGPTHandler {
     
     // Important rule-related terms
     const ruleTerms = [
-      'rob', 'robbery', 'rdm', 'vdm', 'meta', 'power', 'combat', 'log', 'character', 'break',
-      'crew', 'gang', 'police', 'ems', 'government', 'ban', 'appeal', 'report', 'infraction',
-      'heist', 'fleeca', 'pacific', 'hostage', 'safe', 'zone', 'restart', 'tsunami',
-      'discrimination', 'toxic', 'grief', 'scam', 'exploit', 'cheat', 'mod'
+      'roam', 'roaming', 'group', 'people', 'crew', 'rob', 'robbery', 'rdm', 'vdm', 
+      'meta', 'power', 'combat', 'log', 'character', 'break', 'gang', 'police', 
+      'ems', 'government', 'ban', 'appeal', 'report', 'infraction', 'heist', 
+      'fleeca', 'pacific', 'hostage', 'safe', 'zone', 'restart', 'tsunami',
+      'discrimination', 'toxic', 'grief', 'scam', 'exploit', 'cheat', 'mod',
+      'many', 'limit', 'maximum', 'together'
     ];
     
     words.forEach(word => {
@@ -77,7 +103,7 @@ class ConversationalGPTHandler {
       }
     });
     
-    return keywords.slice(0, 5); // Limit keywords
+    return [...new Set(keywords)].slice(0, 5); // Remove duplicates and limit keywords
   }
 
   buildSystemPrompt(userName, guildName, isNewConversation, guildId, rulesContext = '') {
